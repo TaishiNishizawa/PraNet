@@ -97,10 +97,12 @@ class aggregation(nn.Module):
 
 class PraNet(nn.Module):
     # res2net based encoder decoder
-    def __init__(self, channel=32):
+    def __init__(self, channel=32, pretrained=True):
         super(PraNet, self).__init__()
         # ---- ResNet Backbone ----
-        self.resnet = res2net50_v1b_26w_4s(pretrained=True)
+        # pretrained=False leaves the backbone uninitialized, for callers that load the
+        # ImageNet weights themselves (res2net50_v1b_26w_4s loads from a hard-coded path).
+        self.resnet = res2net50_v1b_26w_4s(pretrained=pretrained)
         # ---- Receptive Field Block like module ----
         self.rfb2_1 = RFB_modified(512, channel)
         self.rfb3_1 = RFB_modified(1024, channel)
